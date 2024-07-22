@@ -277,19 +277,3 @@ export const tourByFeatured = async (req, res ,next) => {
     }
 }
 
-
-//getTourCount
-
-export const getTourCount = async (req, res) => {
-
-    try{
-
-        const tourCount = await Tour.estimatedDocumentCount();
-
-        res.status(200).json({success:true, data:tourCount});
-
-    }catch(error){
-
-            res.status(404).json({success:false, message:"unable to count!"})
-    }
-}
