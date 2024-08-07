@@ -1,35 +1,90 @@
 import Review from '../models/ReviewSchema.js'
 import User from '../models/UserSchema.js'
+import Tour from '../models/TourSchema.js'
 
 export const createReview = async (req, res, next) => {
 
-    const {reviewText, rating} = req.body
+    const {review, rating} = req.body
 
     try{
 
-        const userId = req.userId
+        const userId = req.userId;
+        const tourId = req.params.tourId
+
         
-        const user = await User.findById(userId) 
+        const user = await User.findById(userId);        
+        const tour = await Tour.findById(tourId);
 
-        if(!user) {
 
-           return res.status(404).json({success:false, message:"User not found"});
+        if(!user){
+
+           return  res.status(404).json({success:false, message:"User not found!"})
+        }
+
+        if(!tour){
+
+           return res.status(404).json({success:false, message:"tour not found!"})
+           
         }
 
         let userReview = new Review ({
 
-            reviewText, 
+            user: {
+                id: user._id,
+            },
+            tour: {
+                id: tour._id,
+            },
+            review, 
             rating
         })
 
-        await userReview.save();
+        const saveReview = await userReview.save();
+        console.log("Review saved successfully:", saveReview);
 
-        res.status(200).json({success:true, message:"Review Submitted", data:userReview})
+        tour.review.push(saveReview._id);
+        const updateTour = await tour.save();
+
+        console.log("Updated Tour:", updateTour);
+        console.log("rating:", rating)
+
+        tour.ratingsQuantity = tour.review.length;
+        tour.ratingsAverage = 
+        (tour.ratingsAverage * (tour.ratingsQuantity - 1) + rating) / tour.ratingsQuantity;
+
+            await tour.save();
+
+        res.status(200).json({success:true, message:"Review Submitted", data:saveReview})
 
     }catch(error){
 
         res.status(404).json({success:false, message:"failed to save!"})
+        console.log(error.message)
 
     }
 
+}
+
+
+export const getReview = async (req, res, next) => {
+
+    const tourId = req.params.tourId
+
+    try{
+
+        const getTour = await Tour.findById(tourId)
+
+        if(!getTour){
+
+            res.status(404).json({success:false, message:"Tour review not found!"})
+        }
+
+            const {review, rating} = getTour._doc
+
+            res.status(200).json({success:true, message:"Tour review found", data: {review, rating} })
+
+    } catch(error){
+
+        res.status(500).json({success:false, message:"Internal server Error!"})
+    }
 }

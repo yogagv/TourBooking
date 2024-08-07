@@ -48,12 +48,30 @@ const TourSchema = new mongoose.Schema({
         required: true
     },
 
-    reviews: [
+
+    review: [
         {
-            type: mongoose.Types.ObjectId,
-            ref: "review"
+
+        id: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "Review",
+    
+        },
+        review: {
+            
+            type:String,
+        },
+        rating: {
+            type:String
         }
+    }
     ],
+
+    ratingsQuantity: 
+    {
+        type: Number,
+        default: 0,
+    },
 
     featured: {
 
@@ -64,7 +82,7 @@ const TourSchema = new mongoose.Schema({
     user: {
         id: {
             type: mongoose.Schema.Types.ObjectId,
-            ref: "user",
+            ref: "User",
             required: true,
         },
         name: {

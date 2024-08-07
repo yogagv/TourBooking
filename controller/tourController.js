@@ -32,7 +32,7 @@ export const createTour = async (req, res, next) => {
                 name: user.name
             },
             maxGroupSize,
-            reviews,
+            review,
             featured
         })
 
@@ -101,7 +101,7 @@ export const getTourByCity = async (req, res, next) => {
 
     try{
 
-        const tour = await Tour.find({city: new RegExp(tourCity, 'i')});
+        const tour = await Tour.find({city: new RegExp(tourCity, "i")});
 
         if(!tour || tour.length === 0){
 
@@ -231,7 +231,7 @@ export const tourBySearch = async (req, res, next) => {
     // const tourDistance = req.params.distance
     // const maxGroup = req.params.maxGroupSize
 
-    const {city, distance, maxGroupSize} = req.body
+    const {city, distance, maxGroupSize} = req.query
 
     try{
 
@@ -242,7 +242,6 @@ export const tourBySearch = async (req, res, next) => {
 
                                        return res.status(404).send({success:false, message:"Tour not found"});
                                     }
-                                            console.log(tourSearch)
 
                                         res.status(200).send({success:true, message:"Tour found successfully!", data:tourSearch});
                                 
@@ -261,18 +260,23 @@ export const tourBySearch = async (req, res, next) => {
 
 export const tourByFeatured = async (req, res ,next) => {
 
-    const tourFeature = req.params.featured === true
+    const tourFeature = req.params.featured === 'true';
     
     try{
 
         const tour = await Tour.find({featured : tourFeature})
 
-        res.status(200).json({success:true, message:"Tour found Successfully!", data: tour})
+        if(!tour.length > 0){
 
+            return res.status(404).json({success:false, message:"Tour not Found!"})
+        
+        }
+
+        res.status(200).json({success:true, message:"Tour found Successfully!", data: tour})
 
     }catch(error){
 
-        res.status(404).json({success:false, message:"Tour not Found!"})
+        res.status(500).json({success:false, message:"Internal server error"})
 
     }
 }

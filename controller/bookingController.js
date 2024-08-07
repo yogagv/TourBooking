@@ -1,25 +1,51 @@
 import Booking from '../models/BookingSchema.js'
-import User from '../models/BookingSchema.js'
+import User from '../models/UserSchema.js'
+import Tour from '../models/TourSchema.js'
 
 export const createBooking = async (req, res, next) => {
 
-    const {tourName, userEmail, fullName, guestSize, phone, bookAt} = req.body
+    const {fullName, guestSize, phone, bookAt} = req.body
 
     try{
 
-        let userId = req.userId
+        const userId = req.userId;
+        const tourId = req.params.tourId
 
-        let user = User.findById(userId)
+        console.log("userId", userId);
+        console.log("tourId", tourId);
+
+        
+        const user = await User.findById(userId);        
+        const tour = await Tour.findById(tourId);
+
+
+        console.log("Userfound", user)
+
 
         if(!user){
 
-            res.status(404).json({success:false, message:"User not found"})
+           return  res.status(404).json({success:false, message:"User not found!"})
+
+           
         }
+
+        console.log("userFound", user)
+
+        if(!tour){
+
+           return res.status(404).json({success:false, message:"tour not found!"})
+           
+        }
+
 
         let book = new Booking ({
 
-            tourName, 
-            userEmail, 
+            user: {
+                id: userId,
+            },
+            tour: {
+                id: tourId,
+            },
             fullName, 
             guestSize, 
             phone, 
@@ -28,12 +54,12 @@ export const createBooking = async (req, res, next) => {
 
         await book.save();
 
-        res.status(200).json({success:true, message:"Tour Booked Successfully!"});
+        res.status(200).json({success:true, message:"Tour Booked Successfully!", data: book});
 
     }catch(error){
 
         res.status(404).json({success:false, message:"Unable to book"})
-
+        console.log(error.message)
     }
 }
 

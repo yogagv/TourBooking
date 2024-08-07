@@ -50,7 +50,7 @@ app.use("/api/v1/review", reviewRoute);
 app.use("/api/v1/booking", bookingRoute);
 
 dbConect()
-.then(() => {``
+.then(() => {
 app.listen(port, ()=>{
     console.log(`Port is running on ${port}`);
 })

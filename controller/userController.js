@@ -20,7 +20,7 @@ export const allUsers = async (req, res, next) => {
 
 export const getSingleUser = async (req, res, next) => {
 
-    const userId = req.userId;
+    const userId = req.params.id;
 
     try {
 

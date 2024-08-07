@@ -4,7 +4,7 @@ import { authenticate, restrict } from '../auth/verifyToken.js';
 
 const router = express.Router();
 
-router.post("/createBooking", authenticate, restrict(['user']), createBooking);
+router.post('/tourbooking/:tourId' , authenticate, restrict(['user']), createBooking);
 router.get("/getAllBooking", authenticate,restrict(['admin']), getAllBooking);
 router.get("/getBooking", authenticate, restrict(['user']), getBooking);
 

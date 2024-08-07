@@ -6,7 +6,7 @@ const generateToken = (user) => {
     return jwt.sign(
         { id: user._id, role: user.role },
         process.env.JWT_SECRET_KEY,
-        { expiresIn: "2d" }
+        { expiresIn: "15d" }
     );
 };
 export const registerUser = async (req, res, next) => {
@@ -16,7 +16,7 @@ export const registerUser = async (req, res, next) => {
         let user = await User.findOne({ email: email });
 
         if (user) {
-            res.status(400).json({ success: false, message: "User already exist!" });
+           return res.status(400).json({ success: false, message: "User already exist!" });
         }
 
         const salt = await bcrypt.genSalt(10);
@@ -32,7 +32,7 @@ export const registerUser = async (req, res, next) => {
 
         await user.save();
 
-        res
+      return  res
             .status(200)
             .json({ success: true, message: "User registered successfully!" });
     } catch (error) {
