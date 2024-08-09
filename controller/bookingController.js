@@ -63,7 +63,7 @@ export const createBooking = async (req, res, next) => {
     }
 }
 
-export const getAllBooking = async () => {
+export const getAllBooking = async (req, res, next) => {
 
     try{
 
@@ -75,29 +75,33 @@ export const getAllBooking = async () => {
 
         res.status(404).json({success:false, message:"Booking not Found!"})
 
+        
+
     }
 
 }
 
 export const getBooking = async (req, res, next) => {
 
-    const bookingId = req.params.userId
+    const userId = req.params.id;
 
     try{
 
-        const booking = await Booking.findById(bookingId);
-
+        const booking = await Booking.find({user: userId});
+       
         if(!booking){
 
             return res.status(404).json({success:false, message:"Booking not found!"});
         }
 
-            res.status(200).json({success:true, message:"Booking Found!"})
+            res.status(200).json({success:true, message:"Booking Found!", data: booking});
 
 
     }catch(error){
 
         res.status(500).json({success:false, message:"Internal serevr error"})
+
+        console.log(error.message);
 
     }
 }

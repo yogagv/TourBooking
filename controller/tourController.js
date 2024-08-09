@@ -3,7 +3,7 @@ import User from "../models/UserSchema.js";
 
 export const createTour = async (req, res, next) => {
 
-    const {title, city, address, distance, image, price, desc, maxGroupSize, reviews, featured} = req.body
+    const {title, city, address, distance, image, price, desc, maxGroupSize, review, featured} = req.body
 
     try{
 
@@ -55,7 +55,7 @@ export const allTour = async (req, res, next) => {
 
     try{
 
-        const tours = await Tour.find();
+        const tours = await Tour.find().populate('review');
 
         res.status(200).send({success:true, message:"Tours found Successfully!", data:tours});
 
@@ -74,7 +74,12 @@ export const getSingleTour = async (req, res, next) => {
 
     try{
 
-        const tour = await Tour.findById(tourId)
+        const tour = await Tour.findById(tourId).populate('review')
+
+        const tours = await Tour.findOne({ _id: tourId }).populate('review');
+        console.log(tours.review);
+
+        console.log(tour);
 
         if(!tour){
             
@@ -86,6 +91,8 @@ export const getSingleTour = async (req, res, next) => {
     }catch(error){
 
             res.status(400).send({success:false, message:"Internal server Error!"})
+
+            console.log(error.message)
 
     }
         
@@ -101,7 +108,7 @@ export const getTourByCity = async (req, res, next) => {
 
     try{
 
-        const tour = await Tour.find({city: new RegExp(tourCity, "i")});
+        const tour = await Tour.find({city: new RegExp(tourCity, "i")}).populate('review');
 
         if(!tour || tour.length === 0){
 
@@ -128,7 +135,7 @@ export const getTourByDist = async (req, res, next) => {
 
     try{
 
-        const tour = await Tour.find({distance: { $gte: tourDistance, $lte: tourDistance }});
+        const tour = await Tour.find({distance: { $gte: tourDistance, $lte: tourDistance }}).populate('review');
 
         if(!tour || tour.length === 0){
 
@@ -153,7 +160,7 @@ export const getMaxGroupSize = async (req, res, next) => {
 
     try{
 
-        const tour = await Tour.find({maxGroupSize: { $lte: maxGroup }});
+        const tour = await Tour.find({maxGroupSize: { $lte: maxGroup }}).populate('review');
 
         if(!tour || tour.length === 0){
 
@@ -177,7 +184,7 @@ export const updateTour = async (req, res, next) => {
 
     try{
 
-        const tour = await Tour.findByIdAndUpdate(tourid, {$set: req.body}, {new: true});
+        const tour = await Tour.findByIdAndUpdate(tourid, {$set: req.body}, {new: true}).populate('review');
 
         res.status(200).send({success:true, message:"Tour Updated Successfully!", data:tour});
 
@@ -198,7 +205,7 @@ export const deleteTour = async (req, res ,next) => {
 
     try{
 
-        const tour = await Tour.findById(userId);
+        const tour = await Tour.findById(tourId).populate('review');
 
         if(!tour){
 
@@ -236,7 +243,7 @@ export const tourBySearch = async (req, res, next) => {
     try{
 
         const tourSearch = await Tour.find({city: new RegExp(city, 'i'), distance: {$gte: distance },
-                                     maxGroupSize: { $gte: maxGroupSize }});
+                                     maxGroupSize: { $gte: maxGroupSize }}).populate('review');
 
                                      if(!tourSearch || tourSearch.length === 0){
 
@@ -264,7 +271,7 @@ export const tourByFeatured = async (req, res ,next) => {
     
     try{
 
-        const tour = await Tour.find({featured : tourFeature})
+        const tour = await Tour.find({featured : tourFeature}).populate('review')
 
         if(!tour.length > 0){
 

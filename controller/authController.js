@@ -13,6 +13,7 @@ export const registerUser = async (req, res, next) => {
     const { email, name, password, phone, role } = req.body;
 
     try {
+        
         let user = await User.findOne({ email: email });
 
         if (user) {

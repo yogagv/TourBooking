@@ -15,7 +15,6 @@ const ReviewSchema = new mongoose.Schema({
     },
 
 
-
       user: {
         id: {
             type: mongoose.Schema.Types.ObjectId,
@@ -28,6 +27,7 @@ const ReviewSchema = new mongoose.Schema({
     },
 
     review: {
+
         type: String,
     },
 

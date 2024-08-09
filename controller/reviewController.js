@@ -42,10 +42,14 @@ export const createReview = async (req, res, next) => {
         const saveReview = await userReview.save();
         console.log("Review saved successfully:", saveReview);
 
-        tour.review.push(saveReview._id);
-        const updateTour = await tour.save();
+        // tour.review.push(saveReview._id);
+        // const updateTour = await tour.save();
 
-        console.log("Updated Tour:", updateTour);
+        await Tour.findByIdAndUpdate(tourId, {
+            $push: {review: saveReview._id}
+        })
+
+        // console.log("Updated Tour:", updateTour);
         console.log("rating:", rating)
 
         tour.ratingsQuantity = tour.review.length;
@@ -68,23 +72,25 @@ export const createReview = async (req, res, next) => {
 
 export const getReview = async (req, res, next) => {
 
-    const tourId = req.params.tourId
+    const tourId = req.tourId;
 
     try{
 
-        const getTour = await Tour.findById(tourId)
+        const getReview = await Review.find({tour: tourId});
 
-        if(!getTour){
+        console.log(getReview);
 
-            res.status(404).json({success:false, message:"Tour review not found!"})
+        if(!getReview){
+
+            return res.status(404).json({success:false, message:"Tour review not found!"});
+            
         }
 
-            const {review, rating} = getTour._doc
 
-            res.status(200).json({success:true, message:"Tour review found", data: {review, rating} })
+            res.status(200).json({success:true, message:"Tour review found", data: getReview });
 
     } catch(error){
 
-        res.status(500).json({success:false, message:"Internal server Error!"})
+        res.status(500).json({success:false, message:"Internal server Error!"});
     }
 }
