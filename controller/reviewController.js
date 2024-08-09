@@ -42,14 +42,14 @@ export const createReview = async (req, res, next) => {
         const saveReview = await userReview.save();
         console.log("Review saved successfully:", saveReview);
 
-        // tour.review.push(saveReview._id);
-        // const updateTour = await tour.save();
+        tour.review.push(saveReview._id);
+        const updateTour = await tour.save();
 
-        await Tour.findByIdAndUpdate(tourId, {
-            $push: {review: saveReview._id}
-        })
+        // await Tour.findByIdAndUpdate(tourId, {
+        //     $push: {review: saveReview._id}
+        // })
 
-        // console.log("Updated Tour:", updateTour);
+        console.log("Updated Tour:", updateTour);
         console.log("rating:", rating)
 
         tour.ratingsQuantity = tour.review.length;
