@@ -55,6 +55,7 @@ export const restrict = (role) => async (req, res, next) => {
             next();
 
         }else {
+            
             return res.status(401).json({success:false, message:"You are not authorized!"})
         }  
 

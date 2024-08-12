@@ -41,10 +41,10 @@ export const createBooking = async (req, res, next) => {
         let book = new Booking ({
 
             user: {
-                id: userId,
+                id: user.id,
             },
             tour: {
-                id: tourId,
+                id: tour.id,
             },
             fullName, 
             guestSize, 
@@ -76,7 +76,6 @@ export const getAllBooking = async (req, res, next) => {
         res.status(404).json({success:false, message:"Booking not Found!"})
 
         
-
     }
 
 }
@@ -87,7 +86,9 @@ export const getBooking = async (req, res, next) => {
 
     try{
 
-        const booking = await Booking.find({user: userId});
+        const booking = await Booking.find({'user.id': userId});
+
+        console.log(booking);
        
         if(!booking){
 

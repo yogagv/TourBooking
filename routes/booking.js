@@ -6,6 +6,6 @@ const router = express.Router();
 
 router.post('/tourbooking/:tourId' , authenticate, restrict(['user']), createBooking);
 router.get("/getAllBooking", authenticate,restrict(['admin']), getAllBooking);
-router.get("/getBooking/:userId", authenticate, restrict(['user']), getBooking);
+router.get("/getBooking/:id", authenticate, restrict(['user']), getBooking);
 
 export default router;
